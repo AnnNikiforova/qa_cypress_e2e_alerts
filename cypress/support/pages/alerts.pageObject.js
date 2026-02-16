@@ -16,7 +16,7 @@ class AlertsPageObject {
   }
 
   get promptButton() {
-    return cy.get('#promtButton');
+    return cy.get('#promptButton');
   }
 
   get confirmResult() {
