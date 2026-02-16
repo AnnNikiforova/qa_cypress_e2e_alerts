@@ -14,25 +14,40 @@ describe('Cypress application', () => {
   });
 
   it('should assert text inside the first alert', () => {
+    cy.on('window:alert', (text) => {
+      expect(text).to.equal('You clicked a button');
+    });
+
     alertsPage.clickSimpleAlert();
-    alertsPage.assertAlertText('You clicked a button');
   });
 
   it('should assert delayed alert appears without arbitrary wait', () => {
+    cy.on('window:alert', (text) => {
+      expect(text).to.equal('This alert appeared after 5 seconds');
+    });
+
     alertsPage.clickTimerAlert();
-    alertsPage.assertAlertText('This alert appeared after 5 seconds');
   });
 
   it('should assert confirmation alert and handle OK selection', () => {
+    cy.on('window:confirm', (text) => {
+      expect(text).to.equal('Do you confirm action?');
+      return true;
+    });
+
     alertsPage.clickConfirmAlert();
-    alertsPage.confirmAlert('Do you confirm action?', true);
+
     alertsPage.confirmResult
       .should('contain', 'You selected Ok');
   });
 
   it('should assert confirmation alert and handle Cancel selection', () => {
+    cy.on('window:confirm', (text) => {
+      expect(text).to.equal('Do you confirm action?');
+      return false;
+    });
     alertsPage.clickConfirmAlert();
-    alertsPage.confirmAlert('Do you confirm action?', false);
+
     alertsPage.confirmResult
       .should('contain', 'You selected Cancel');
   });
@@ -40,8 +55,12 @@ describe('Cypress application', () => {
   it('should enter text in prompt alert and validate input', () => {
     const name = 'Cypress User';
 
-    alertsPage.enterTextToPrompt(name);
+    cy.window().then((win) => {
+      cy.stub(win, 'prompt').returns(name);
+    });
+
     alertsPage.clickPromptAlert();
+
     alertsPage.promptResult
       .should('contain', name);
   });

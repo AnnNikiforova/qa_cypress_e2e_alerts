@@ -42,25 +42,6 @@ class AlertsPageObject {
   clickPromptAlert() {
     this.promptButton.click();
   }
-
-  assertAlertText(expectedText) {
-    cy.on('window:alert', (text) => {
-      expect(text).to.equal(expectedText);
-    });
-  }
-
-  confirmAlert(expectedText, action = true) {
-    cy.on('window:confirm', (text) => {
-      expect(text).to.equal(expectedText);
-      return action;
-    });
-  }
-
-  enterTextToPrompt(value) {
-    cy.window().then((win) => {
-      cy.stub(win, 'prompt').returns(value);
-    });
-  }
 }
 
 export default AlertsPageObject;
